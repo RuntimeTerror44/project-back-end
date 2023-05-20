@@ -35,6 +35,8 @@ function UserInfo(username, password, firstName, lastName, email, dateOfBirth, c
 server.get("/", handleHome);
 server.post('/users', createUser);
 server.post('/portfolio', addPortfolioInfo);
+server.delete('/users/:id', deleteUsersHandler)
+server.get('/users', getUsersHandler)
 // server.post('/login', handleLogin);
 
 
@@ -44,8 +46,21 @@ function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
 
+function deleteUsersHandler(req, res){
+  const userId = req.params.id;
+  const sql = 'DELETE FROM usersinfo WHERE id = $1';
+  const values = [userId];
+  client.query(sql, values)
+    .then(() => {
+      res.status(200).json({ message: 'User deleted successfully' });
+    })
+    .catch(err => {
+      console.error('Error deleting user:', err);
+      res.status(500).json({ error: 'Failed to delete user' });
+    });
+}
 
-server.get('/users', (req, res) => {
+function getUsersHandler(req, res){
   const sql = 'SELECT * FROM usersinfo';
 
   client.query(sql)
@@ -57,7 +72,7 @@ server.get('/users', (req, res) => {
       console.error("Error retrieving users:", err);
       res.status(500).json({ error: "Failed to retrieve users" });
     });
-});
+}
 
 
 
@@ -85,57 +100,17 @@ function createUser(req, res) {
 
 
 function addPortfolioInfo(req, res) {
-  const {
-    userId,
-    fullname,
-    email,
-    phonenum,
-    address,
-    country,
-    profilepic,
-    education,
-    certifications,
-    workexperience,
-    skills,
-    projects,
-    languages
-  } = req.body;
+  const {userId,fullname,email,phonenum,address,country,profilepic,education,certifications,workexperience,skills,projects,languages} = req.body;
 
   const sql = `
-    INSERT INTO portfolio (
-      userId,
-      fullname,
-      email,
-      phonenum,
-      address,
-      country,
-      profilepic,
-      education,
-      certifications,
-      workexperience,
-      skills,
-      projects,
-      languages
+    INSERT INTO portfolio (userId,fullname,email,phonenum,address,country,profilepic,education,certifications,workexperience,skills,projects,languages
     )
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     RETURNING *
   `;
 
   const values = [
-    userId,
-    fullname,
-    email,
-    phonenum,
-    address,
-    country,
-    profilepic,
-    education,
-    certifications,
-    workexperience,
-    skills,
-    projects,
-    languages
-  ];
+    userId, fullname, email, phonenum, address, country, profilepic, education, certifications, workexperience, skills, projects, languages];
 
   client.query(sql, values)
     .then(data => {
