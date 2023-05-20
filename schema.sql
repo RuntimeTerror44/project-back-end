@@ -16,8 +16,6 @@ CREATE TABLE IF NOT EXISTS usersinfo (
     imgforcover VARCHAR(255)
 );
 
-
-
 -- PORTFOLIO table
 DROP TABLE IF EXISTS portfolio;
 CREATE TABLE IF NOT EXISTS portfolio (

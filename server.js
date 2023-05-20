@@ -44,6 +44,19 @@ function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
 
+server.get('/users', (req, res) => {
+  const sql = 'SELECT * FROM usersinfo';
+
+  client.query(sql)
+    .then(data => {
+      const users = data.rows;
+      res.status(200).json(users);
+    })
+    .catch(err => {
+      console.error("Error retrieving users:", err);
+      res.status(500).json({ error: "Failed to retrieve users" });
+    });
+});
 // function handleLogin(req, res) {
 //   const { username, password, email } = req.body;
 //   const values = [username, password, email];
@@ -92,9 +105,7 @@ function createUser(req, res) {
       username, password, firstName, lastName, email, dateofbirth, country, city,
       phonenumber, address, gender, profilepicture, imgforcover
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-    RETURNING *;
-  `;
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *;`;
   const values = [username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover];
 
   client.query(sql, values)
