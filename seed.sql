@@ -1,7 +1,10 @@
-INSERT INTO usersinfo (firstName, lastName, email, dateofbirth, country, city, phonenumber, address, gender, profilepicture, imgforcover)
+-- Insert sample user data
+INSERT INTO usersinfo (username, password, firstName, lastName, email, dateofbirth, country, city, phonenumber, address, gender, profilepicture, imgforcover)
 VALUES
-    ('John', 'Doe', 'johndoe@example.com', '1998-05-15', 'USA', 'New York', '+1 123-456-7890', '123 Main St', 'Male', 'http://example.com/profile1.jpg', 'http://example.com/cover1.jpg'),
-    ('Jane', 'Smith', 'janesmith@example.com', '1990-12-02', 'Canada', 'Toronto', '+1 987-654-3210', '456 Elm St', 'Female', 'http://example.com/profile2.jpg', 'http://example.com/cover2.jpg');
+    ('john123', 'password1', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'profile.jpg', 'cover.jpg'),
+    ('jane456', 'password2', 'Jane', 'Smith', 'janesmith@example.com', '1985-02-15', 'Canada', 'Toronto', '+987654321', '456 Elm St', 'Female', 'avatar.jpg', 'banner.jpg');
+
+
 
 
 

@@ -1,7 +1,8 @@
--- USERS Info table
 DROP TABLE IF EXISTS usersinfo;
 CREATE TABLE IF NOT EXISTS usersinfo (
     ID SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE,
+    password VARCHAR(50),
     firstName VARCHAR(50),
     lastName VARCHAR(50),
     email VARCHAR(100) UNIQUE,

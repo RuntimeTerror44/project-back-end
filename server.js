@@ -14,7 +14,9 @@ server.use(express.json());
 
 
 // User Info Constructor
-function UserInfo(firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover) {
+function UserInfo(username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover) {
+  this.username = username;
+  this.password = password;
   this.firstName = firstName;
   this.lastName = lastName;
   this.email = email;
@@ -33,6 +35,7 @@ function UserInfo(firstName, lastName, email, dateOfBirth, country, city, phoneN
 server.get("/", handleHome);
 server.post('/users', createUser);
 server.post('/portfolio', addPortfolioInfo);
+// server.post('/login', handleLogin);
 
 
 
@@ -41,22 +44,58 @@ function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
 
+// function handleLogin(req, res) {
+//   const { username, password, email } = req.body;
+//   const values = [username, password, email];
+//   const sql = `INSERT INTO usersinfo (username, password, email) VALUES ($1, $2, $3)`;
 
+//   client
+//     .query(sql, values)
+//     .then(() => {
+//       res.status(201).json({ message: 'User created successfully' });
+//     })
+//     .catch((error) => {
+//       console.error('Error creating user:', error);
+//       res.status(500).json({ message: 'Error creating user' });
+//     });
+// }
 
+// function createUser(req, res) {
+//   const { username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover } = req.body;
+//   const sql = `
+//     INSERT INTO usersinfo (
+//       username, password, firstName, lastName, email, dateofbirth, country, city,
+//       phonenumber, address, gender, profilepicture, imgforcover
+//     )
+//     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+//     ON CONFLICT (email) DO UPDATE SET
+//       firstName = $1, lastName = $2, dateofbirth = $4, country = $5, city = $6,
+//       phonenumber = $7, address = $8, gender = $9, profilepicture = $10, imgforcover = $11
+//     RETURNING *;
+//   `;
+//   const values = [firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover];
+
+//   client.query(sql, values)
+//     .then(data => {
+//       const createdUser = data.rows[0];
+//       res.status(201).json(createdUser);
+//     })
+//     .catch(err => {
+//       console.error("Error creating/updating user:", err);
+//       res.status(500).json({ error: "Failed to create/update user" });
+//     });
+// }
 function createUser(req, res) {
-  const { firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover } = req.body;
+  const { username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover } = req.body;
   const sql = `
     INSERT INTO usersinfo (
-      firstName, lastName, email, dateofbirth, country, city,
+      username, password, firstName, lastName, email, dateofbirth, country, city,
       phonenumber, address, gender, profilepicture, imgforcover
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-    ON CONFLICT (email) DO UPDATE SET
-      firstName = $1, lastName = $2, dateofbirth = $4, country = $5, city = $6,
-      phonenumber = $7, address = $8, gender = $9, profilepicture = $10, imgforcover = $11
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     RETURNING *;
   `;
-  const values = [firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover];
+  const values = [username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover];
 
   client.query(sql, values)
     .then(data => {
@@ -64,10 +103,11 @@ function createUser(req, res) {
       res.status(201).json(createdUser);
     })
     .catch(err => {
-      console.error("Error creating/updating user:", err);
-      res.status(500).json({ error: "Failed to create/update user" });
+      console.error("Error creating user:", err);
+      res.status(500).json({ error: "Failed to create user" });
     });
 }
+
 
 
 function addPortfolioInfo(req, res) {
