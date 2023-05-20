@@ -44,47 +44,23 @@ function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
 
-// function handleLogin(req, res) {
-//   const { username, password, email } = req.body;
-//   const values = [username, password, email];
-//   const sql = `INSERT INTO usersinfo (username, password, email) VALUES ($1, $2, $3)`;
 
-//   client
-//     .query(sql, values)
-//     .then(() => {
-//       res.status(201).json({ message: 'User created successfully' });
-//     })
-//     .catch((error) => {
-//       console.error('Error creating user:', error);
-//       res.status(500).json({ message: 'Error creating user' });
-//     });
-// }
+server.get('/users', (req, res) => {
+  const sql = 'SELECT * FROM usersinfo';
 
-// function createUser(req, res) {
-//   const { username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover } = req.body;
-//   const sql = `
-//     INSERT INTO usersinfo (
-//       username, password, firstName, lastName, email, dateofbirth, country, city,
-//       phonenumber, address, gender, profilepicture, imgforcover
-//     )
-//     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-//     ON CONFLICT (email) DO UPDATE SET
-//       firstName = $1, lastName = $2, dateofbirth = $4, country = $5, city = $6,
-//       phonenumber = $7, address = $8, gender = $9, profilepicture = $10, imgforcover = $11
-//     RETURNING *;
-//   `;
-//   const values = [firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover];
+  client.query(sql)
+    .then(data => {
+      const users = data.rows;
+      res.status(200).json(users);
+    })
+    .catch(err => {
+      console.error("Error retrieving users:", err);
+      res.status(500).json({ error: "Failed to retrieve users" });
+    });
+});
 
-//   client.query(sql, values)
-//     .then(data => {
-//       const createdUser = data.rows[0];
-//       res.status(201).json(createdUser);
-//     })
-//     .catch(err => {
-//       console.error("Error creating/updating user:", err);
-//       res.status(500).json({ error: "Failed to create/update user" });
-//     });
-// }
+
+
 function createUser(req, res) {
   const { username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover } = req.body;
   const sql = `
@@ -92,9 +68,7 @@ function createUser(req, res) {
       username, password, firstName, lastName, email, dateofbirth, country, city,
       phonenumber, address, gender, profilepicture, imgforcover
     )
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-    RETURNING *;
-  `;
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *;`;
   const values = [username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover];
 
   client.query(sql, values)
