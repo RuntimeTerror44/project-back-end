@@ -12,13 +12,20 @@ server.use(express.json());
 // const moviesData = require("./Movie Data/data.json"); get data from json
 // const movieKey = process.env.API_KEY; API KEY
 
-const users = [];
 
-// User constructor function
-function User(username, password, email) {
-  this.username = username;
-  this.password = password;
+// User Info Constructor
+function UserInfo(firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover) {
+  this.firstName = firstName;
+  this.lastName = lastName;
   this.email = email;
+  this.dateOfBirth = dateOfBirth;
+  this.country = country;
+  this.city = city;
+  this.phoneNumber = phoneNumber;
+  this.address = address;
+  this.gender = gender;
+  this.profilePicture = profilePicture;
+  this.imgForCover = imgForCover;
 }
 
 
@@ -33,12 +40,23 @@ server.post('/portfolio', addPortfolioInfo);
 function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
-function createUser(req, res) {
-  const { username, password, email } = req.body;
-  const user = new User(username, password, email);
 
-  const sql = "INSERT INTO usersinfo (username, password, email) VALUES ($1, $2, $3) RETURNING *";
-  const values = [username, password, email];
+
+
+function createUser(req, res) {
+  const { firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover } = req.body;
+  const sql = `
+    INSERT INTO usersinfo (
+      firstName, lastName, email, dateofbirth, country, city,
+      phonenumber, address, gender, profilepicture, imgforcover
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+    ON CONFLICT (email) DO UPDATE SET
+      firstName = $1, lastName = $2, dateofbirth = $4, country = $5, city = $6,
+      phonenumber = $7, address = $8, gender = $9, profilepicture = $10, imgforcover = $11
+    RETURNING *;
+  `;
+  const values = [firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover];
 
   client.query(sql, values)
     .then(data => {
@@ -46,10 +64,12 @@ function createUser(req, res) {
       res.status(201).json(createdUser);
     })
     .catch(err => {
-      console.error("Error creating user:", err);
-      res.status(500).json({ error: "Failed to create user" });
+      console.error("Error creating/updating user:", err);
+      res.status(500).json({ error: "Failed to create/update user" });
     });
 }
+
+
 function addPortfolioInfo(req, res) {
   const {
     userId,
@@ -113,66 +133,6 @@ function addPortfolioInfo(req, res) {
       res.status(500).json({ error: "Failed to add portfolio information" });
     });
 }
-
-
-// function createUser(req, res) {
-//   const { username, password, email } = req.body;
-//   const user = new User(username, password, email);
-//   users.push(user);
-//   res.status(201).json(user);
-// }
-// function createUser(req, res) {
-//   const sql = "INSERT INTO login ('username', 'password', 'email') VALUES ($1,$2,$3) RETURNING *;";
-//   const values = [req.body.username, req.body.password, req.body.email];
-  
-//   db.query(sql, [values], (err, data) => {
-//     if (err) {
-//       return res.json("Error");
-//     }
-//     return res.json(data);
-//   });
-// }
-
-
-// function addPortfolioInfo(req, res) {
-//   const {
-//     userId,
-//     fullname,
-//     email,
-//     phonenum,
-//     address,
-//     country,
-//     profilepic,
-//     education,
-//     certifications,
-//     workexperience,
-//     skills,
-//     projects,
-//     languages
-//   } = req.body;
-
-//   const portfolio = {
-//     userId,
-//     fullname,
-//     email,
-//     phonenum,
-//     address,
-//     country,
-//     profilepic,
-//     education,
-//     certifications,
-//     workexperience,
-//     skills,
-//     projects,
-//     languages
-//   };
-
-//   res.status(201).json({ message: 'Portfolio information added successfully', portfolio });
-// }
-
-  
-
-
 
 //-------------------------------------------------------------------------------------------
 //function to handle 404 Errors

@@ -1,24 +1,24 @@
 -- USERS Info table
+DROP TABLE IF EXISTS usersinfo;
 CREATE TABLE IF NOT EXISTS usersinfo (
     ID SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    email VARCHAR(100) UNIQUE,
-    fullname VARCHAR(100),
     firstName VARCHAR(50),
     lastName VARCHAR(50),
-    password VARCHAR(255),
-    age INT,
-    address VARCHAR(100),
-    country VARCHAR(50),
+    email VARCHAR(100) UNIQUE,
     dateofbirth DATE,
-    gender VARCHAR(10),
+    country VARCHAR(50),
+    city VARCHAR(50),
     phonenumber VARCHAR(20),
+    address VARCHAR(100),
+    gender VARCHAR(10),
     profilepicture VARCHAR(255),
     imgforcover VARCHAR(255)
 );
 
 
+
 -- PORTFOLIO table
+DROP TABLE IF EXISTS portfolio;
 CREATE TABLE IF NOT EXISTS portfolio (
   ID SERIAL PRIMARY KEY,
   userId INT,

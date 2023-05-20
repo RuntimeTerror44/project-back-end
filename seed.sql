@@ -1,7 +1,7 @@
-INSERT INTO users (username, email, fullname, firstName, lastName, password, age, address, country, dateofbirth, gender, phonenumber, profilepicture, imgforcover)
+INSERT INTO usersinfo (firstName, lastName, email, dateofbirth, country, city, phonenumber, address, gender, profilepicture, imgforcover)
 VALUES
-    ('user1', 'user1@example.com', 'John Doe', 'John', 'Doe', 'password1', 25, '123 Main St', 'USA', '1998-05-15', 'Male', '+1 123-456-7890', 'http://example.com/profile1.jpg', 'http://example.com/cover1.jpg'),
-    ('user2', 'user2@example.com', 'Jane Smith', 'Jane', 'Smith', 'password2', 30, '456 Elm St', 'Canada', '1990-12-02', 'Female', '+1 987-654-3210', 'http://example.com/profile2.jpg', 'http://example.com/cover2.jpg');
+    ('John', 'Doe', 'johndoe@example.com', '1998-05-15', 'USA', 'New York', '+1 123-456-7890', '123 Main St', 'Male', 'http://example.com/profile1.jpg', 'http://example.com/cover1.jpg'),
+    ('Jane', 'Smith', 'janesmith@example.com', '1990-12-02', 'Canada', 'Toronto', '+1 987-654-3210', '456 Elm St', 'Female', 'http://example.com/profile2.jpg', 'http://example.com/cover2.jpg');
 
 
 
