@@ -37,12 +37,63 @@ server.post('/users', createUser);
 server.post('/portfolio', addPortfolioInfo);
 server.delete('/users/:id', deleteUsersHandler)
 server.get('/users', getUsersHandler)
+server.get('/job',getJobs)
+server.delete('/job/:id',deleteJob) 
+server.post('/addjob',addJob)
 server.get('posts', addPostHandler)
 // server.post('/login', handleLogin);
 
 
 
 //handlers
+function addJob(req,res){
+  const {userId, job_field, job_title,job_post_content,job_details } = req.body
+  const sql = `INSERT INTO jobs (userId, job_field, job_title,job_post_content,job_details)
+  VALUES ($1, $2, $3,$4,$5) RETURNING *;`;
+
+
+const values = [userId, job_field, job_title, job_post_content, job_details];
+client.query(sql, values)
+.then(data => {
+  const createdUser = data.rows[0];
+  res.status(201).json(createdUser);
+})
+.catch(err => {
+  console.error("Error creating job:", err);
+  res.status(500).json({ error: "Failed to create job" });
+});
+
+}
+function deleteJob(req,res){
+
+  const userId = req.params.id;
+  const sql = 'DELETE FROM jobs WHERE id = $1';
+  const values = [userId];
+  client.query(sql, values)
+    .then(() => {
+      res.status(200).json({ message: 'Job deleted successfully' });
+    })
+    .catch(err => {
+      console.error('Error deleting job:', err);
+      res.status(500).json({ error: 'Failed to delete job' });
+    });
+}
+
+
+
+
+function getJobs(req,res){
+
+
+  const sql = 'SELECT * FROM jobs'
+
+  client.query(sql)
+    .then(data => {
+      const users = data.rows;
+      res.status(200).json(users);
+    })
+
+}
 function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }

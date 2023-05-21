@@ -2,11 +2,11 @@
 DROP TABLE IF EXISTS usersinfo;
 CREATE TABLE IF NOT EXISTS usersinfo (
     ID SERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE,
+    username VARCHAR(50) ,
     password VARCHAR(50),
     firstName VARCHAR(50),
     lastName VARCHAR(50),
-    email VARCHAR(100) UNIQUE,
+    email VARCHAR(100) ,
     dateofbirth DATE,
     country VARCHAR(50),
     city VARCHAR(50),
@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS portfolio (
   languages TEXT
 );
 
+DROP TABLE IF EXISTS jobs;
+CREATE TABLE IF NOT EXISTS jobs(
+ID SERIAL PRIMARY KEY,
+userId INTEGER REFERENCES usersinfo(ID) ON DELETE CASCADE,
+job_field VARCHAR(255),
+job_title VARCHAR(255),
+job_post_content VARCHAR(255),
+job_details VARCHAR(255)
+);
 -- POSTS table
 DROP TABLE IF EXISTS posts;
 CREATE TABLE IF NOT EXISTS posts (
