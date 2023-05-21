@@ -37,11 +37,25 @@ server.post('/users', createUser);
 server.post('/portfolio', addPortfolioInfo);
 server.delete('/users/:id', deleteUsersHandler)
 server.get('/users', getUsersHandler)
+server.get('/job',getJobs)
 // server.post('/login', handleLogin);
 
 
 
 //handlers
+
+function getJobs(){
+
+
+  const sql = 'SELECT * FROM jobs'
+
+  client.query(sql)
+    .then(data => {
+      const users = data.rows;
+      res.status(200).json(users);
+    })
+
+}
 function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
