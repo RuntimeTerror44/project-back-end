@@ -1,3 +1,4 @@
+-- USERS table
 DROP TABLE IF EXISTS usersinfo;
 CREATE TABLE IF NOT EXISTS usersinfo (
     ID SERIAL PRIMARY KEY,
@@ -44,3 +45,16 @@ job_title VARCHAR(255),
 job_post_content VARCHAR(255),
 job_details VARCHAR(255)
 );
+-- POSTS table
+DROP TABLE IF EXISTS posts;
+CREATE TABLE IF NOT EXISTS posts (
+  post_id SERIAL PRIMARY KEY,
+  user_id INT,
+  paragraph_content TEXT,
+  photo_content TEXT,
+  post_date DATE,
+  FOREIGN KEY (user_id) REFERENCES usersinfo (ID)
+);
+
+
+
