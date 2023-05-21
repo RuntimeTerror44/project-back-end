@@ -50,9 +50,12 @@ server.post("/portfolio", addPortfolioInfo);
 server.delete("/users/:id", deleteUsersHandler);
 server.get("/users", getUsersHandler);
 server.get("/job", getJobs);
+server.get("/job/:id", getJobsByID);
 server.delete("/job/:id", deleteJob);
 server.post("/addjob", addJob);
-server.get("posts", addPostHandler);
+server.post("/posts", addPostHandler);
+server.get("/posts", getPosts);
+
 // server.post('/login', handleLogin);
 
 //handlers
@@ -97,14 +100,42 @@ function getJobs(req, res) {
     res.status(200).json(users);
   });
 }
+
+function getJobsByID(req, res) {
+  const userId = req.params.id;
+  const sql = "SELECT * FROM jobs WHERE userId = $1";
+  const values = [userId];
+  client
+    .query(sql, values)
+    .then((data) => {
+      res.status(200).json(data.rows);
+    })
+    .catch((err) => {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Failed to delete user" });
+    });
+}
+
+function handleHome(req, res) {
+  res.send("Welcome to Database Home");
+}
+
+function getPosts(req, res) {
+  const sql = "SELECT * FROM posts";
+
+  client.query(sql).then((data) => {
+    const users = data.rows;
+    res.status(200).json(users);
+  });
+}
 function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
 
 function addPostHandler(req, res) {
-  const { paragraph_content, photo_content, post_date } = req.body;
-  const sql = `INSERT INTO posts (paragraph_content, photo_content, post_date)
-      VALUES ($1, $2, $3) RETURNING *;`;
+  const { user_id,paragraph_content, photo_content, post_date } = req.body;
+  const sql = `INSERT INTO posts (user_id, paragraph_content, photo_content, post_date)
+      VALUES ($1, $2, $3, $4) RETURNING *;`;
   const values = [user_id, paragraph_content, photo_content, post_date];
   client
     .query(sql, values)
@@ -307,9 +338,9 @@ function deleteCommentsFromPost(req, res) {
     });
 }
 
-server.get("/posts/{post_id}/comments", getCommentsByPost);
-server.post("/posts/{post_id}/comments", addCommentsHandler);
-server.delete("/posts/{post_id}/comments", deleteCommentsFromPost);
+server.get("/posts/:post_id/comments", getCommentsByPost);
+server.post("/posts/:post_id/comments", addCommentsHandler);
+server.delete("/posts/:post_id/comments", deleteCommentsFromPost);
 //.............................................................................................
 
 //-------------------------------------------------------------------------------------------
