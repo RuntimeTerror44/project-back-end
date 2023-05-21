@@ -1,5 +1,5 @@
 -- USERS table
-DROP TABLE IF EXISTS usersinfo;
+DROP TABLE IF EXISTS usersinfo CASCADE;
 CREATE TABLE IF NOT EXISTS usersinfo (
     ID SERIAL PRIMARY KEY,
     username VARCHAR(50) ,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS portfolio (
   projects TEXT,
   languages TEXT
 );
-
+--jobs table
 DROP TABLE IF EXISTS jobs;
 CREATE TABLE IF NOT EXISTS jobs(
 ID SERIAL PRIMARY KEY,
@@ -45,16 +45,25 @@ job_title VARCHAR(255),
 job_post_content VARCHAR(255),
 job_details VARCHAR(255)
 );
+
+
 -- POSTS table
-DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS posts CASCADE;
 CREATE TABLE IF NOT EXISTS posts (
   post_id SERIAL PRIMARY KEY,
-  user_id INT,
+  user_id INTEGER REFERENCES usersinfo(ID) ON DELETE CASCADE,
   paragraph_content TEXT,
   photo_content TEXT,
-  post_date DATE,
-  FOREIGN KEY (user_id) REFERENCES usersinfo (ID)
+  post_date DATE
 );
 
 
-
+-- comments table
+DROP TABLE IF EXISTS comments;
+CREATE TABLE IF NOT EXISTS comments (
+  comment_id SERIAL PRIMARY KEY,
+  content TEXT,
+  comment_date DATE,
+  user_id INTEGER REFERENCES usersinfo(ID) ON DELETE CASCADE,
+  post_id  INTEGER REFERENCES posts(post_id) ON DELETE CASCADE     
+);
