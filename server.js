@@ -37,7 +37,6 @@ server.post('/users', createUser);
 server.post('/portfolio', addPortfolioInfo);
 server.delete('/users/:id', deleteUsersHandler)
 server.get('/users', getUsersHandler)
-server.get('posts', addPostHandler)
 // server.post('/login', handleLogin);
 
 
@@ -47,22 +46,6 @@ function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
 
-  function addPostHandler(req, res) {
-    const {paragraph_content, photo_content, post_date } = req.body;
-    const sql = `INSERT INTO posts (paragraph_content, photo_content, post_date)
-      VALUES ($1, $2, $3) RETURNING *;`;
-    const values = [user_id, paragraph_content, photo_content, post_date];
-    client.query(sql, values)
-      .then(data => {
-        const createdPost = data.rows[0];
-        res.status(201).json(createdPost);
-      })
-      .catch(err => {
-        console.error("Error adding post:", err);
-        res.status(500).json({ error: "Failed to add post" });
-      });
-  }
-  
 function deleteUsersHandler(req, res){
   const userId = req.params.id;
   const sql = 'DELETE FROM usersinfo WHERE id = $1';

@@ -1,4 +1,3 @@
--- USERS table
 DROP TABLE IF EXISTS usersinfo;
 CREATE TABLE IF NOT EXISTS usersinfo (
     ID SERIAL PRIMARY KEY,
@@ -35,17 +34,4 @@ CREATE TABLE IF NOT EXISTS portfolio (
   projects TEXT,
   languages TEXT
 );
-
--- POSTS table
-DROP TABLE IF EXISTS posts;
-CREATE TABLE IF NOT EXISTS posts (
-  post_id SERIAL PRIMARY KEY,
-  user_id INT,
-  paragraph_content TEXT,
-  photo_content TEXT,
-  post_date DATE,
-  FOREIGN KEY (user_id) REFERENCES usersinfo (ID)
-);
-
-
 
