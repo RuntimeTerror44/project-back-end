@@ -23,10 +23,11 @@ INSERT INTO posts (user_id, paragraph_content, photo_content, post_date) VALUES
     (1, 'Hello, this is my first post!', 'photo1.jpg', '2023-05-20'),
     (1, 'I had a great day at the beach!', 'photo2.jpg', '2023-05-21'),
     (2, 'Excited for my upcoming trip!', 'photo3.jpg', '2023-05-22'),
-    (3, 'Enjoying the beautiful sunset.', 'photo4.jpg', '2023-05-23');
+    (1, 'Enjoying the beautiful sunset.', 'photo4.jpg', '2023-05-23');
 
 
 -- comments table seed 
 INSERT INTO comments (content, comment_date, user_id, post_id) VALUES
 ('this is comment 1','2023-05-20',1,1 ),
-('this is comment 2','2023-05-21',2,2);
+('this is comment 2','2023-05-21',2,2),
+('this is comment 2','2023-05-21',1,2);
