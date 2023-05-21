@@ -12,9 +12,22 @@ server.use(express.json());
 // const moviesData = require("./Movie Data/data.json"); get data from json
 // const movieKey = process.env.API_KEY; API KEY
 
-
 // User Info Constructor
-function UserInfo(username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover) {
+function UserInfo(
+  username,
+  password,
+  firstName,
+  lastName,
+  email,
+  dateOfBirth,
+  country,
+  city,
+  phoneNumber,
+  address,
+  gender,
+  profilePicture,
+  imgForCover
+) {
   this.username = username;
   this.password = password;
   this.firstName = firstName;
@@ -30,77 +43,177 @@ function UserInfo(username, password, firstName, lastName, email, dateOfBirth, c
   this.imgForCover = imgForCover;
 }
 
-
 //routs
 server.get("/", handleHome);
-server.post('/users', createUser);
-server.post('/portfolio', addPortfolioInfo);
-server.delete('/users/:id', deleteUsersHandler)
-server.get('/users', getUsersHandler)
+server.post("/users", createUser);
+server.post("/portfolio", addPortfolioInfo);
+server.delete("/users/:id", deleteUsersHandler);
+server.get("/users", getUsersHandler);
+server.get("/job", getJobs);
+server.delete("/job/:id", deleteJob);
+server.post("/addjob", addJob);
+server.get("posts", addPostHandler);
 // server.post('/login', handleLogin);
 
-
-
 //handlers
+function addJob(req, res) {
+  const { userId, job_field, job_title, job_post_content, job_details } =
+    req.body;
+  const sql = `INSERT INTO jobs (userId, job_field, job_title,job_post_content,job_details)
+  VALUES ($1, $2, $3,$4,$5) RETURNING *;`;
+
+  const values = [userId, job_field, job_title, job_post_content, job_details];
+  client
+    .query(sql, values)
+    .then((data) => {
+      const createdUser = data.rows[0];
+      res.status(201).json(createdUser);
+    })
+    .catch((err) => {
+      console.error("Error creating job:", err);
+      res.status(500).json({ error: "Failed to create job" });
+    });
+}
+function deleteJob(req, res) {
+  const userId = req.params.id;
+  const sql = "DELETE FROM jobs WHERE id = $1";
+  const values = [userId];
+  client
+    .query(sql, values)
+    .then(() => {
+      res.status(200).json({ message: "Job deleted successfully" });
+    })
+    .catch((err) => {
+      console.error("Error deleting job:", err);
+      res.status(500).json({ error: "Failed to delete job" });
+    });
+}
+
+function getJobs(req, res) {
+  const sql = "SELECT * FROM jobs";
+
+  client.query(sql).then((data) => {
+    const users = data.rows;
+    res.status(200).json(users);
+  });
+}
 function handleHome(req, res) {
   res.send("Welcome to Database Home");
 }
 
-function deleteUsersHandler(req, res){
-  const userId = req.params.id;
-  const sql = 'DELETE FROM usersinfo WHERE id = $1';
-  const values = [userId];
-  client.query(sql, values)
-    .then(() => {
-      res.status(200).json({ message: 'User deleted successfully' });
+function addPostHandler(req, res) {
+  const { paragraph_content, photo_content, post_date } = req.body;
+  const sql = `INSERT INTO posts (paragraph_content, photo_content, post_date)
+      VALUES ($1, $2, $3) RETURNING *;`;
+  const values = [user_id, paragraph_content, photo_content, post_date];
+  client
+    .query(sql, values)
+    .then((data) => {
+      const createdPost = data.rows[0];
+      res.status(201).json(createdPost);
     })
-    .catch(err => {
-      console.error('Error deleting user:', err);
-      res.status(500).json({ error: 'Failed to delete user' });
+    .catch((err) => {
+      console.error("Error adding post:", err);
+      res.status(500).json({ error: "Failed to add post" });
     });
 }
 
-function getUsersHandler(req, res){
-  const sql = 'SELECT * FROM usersinfo';
+function deleteUsersHandler(req, res) {
+  const userId = req.params.id;
+  const sql = "DELETE FROM usersinfo WHERE id = $1";
+  const values = [userId];
+  client
+    .query(sql, values)
+    .then(() => {
+      res.status(200).json({ message: "User deleted successfully" });
+    })
+    .catch((err) => {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Failed to delete user" });
+    });
+}
 
-  client.query(sql)
-    .then(data => {
+function getUsersHandler(req, res) {
+  const sql = "SELECT * FROM usersinfo";
+
+  client
+    .query(sql)
+    .then((data) => {
       const users = data.rows;
       res.status(200).json(users);
     })
-    .catch(err => {
+    .catch((err) => {
       console.error("Error retrieving users:", err);
       res.status(500).json({ error: "Failed to retrieve users" });
     });
 }
 
-
-
 function createUser(req, res) {
-  const { username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover } = req.body;
+  const {
+    username,
+    password,
+    firstName,
+    lastName,
+    email,
+    dateOfBirth,
+    country,
+    city,
+    phoneNumber,
+    address,
+    gender,
+    profilePicture,
+    imgForCover,
+  } = req.body;
   const sql = `
     INSERT INTO usersinfo (
       username, password, firstName, lastName, email, dateofbirth, country, city,
       phonenumber, address, gender, profilepicture, imgforcover
     )
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *;`;
-  const values = [username, password, firstName, lastName, email, dateOfBirth, country, city, phoneNumber, address, gender, profilePicture, imgForCover];
+  const values = [
+    username,
+    password,
+    firstName,
+    lastName,
+    email,
+    dateOfBirth,
+    country,
+    city,
+    phoneNumber,
+    address,
+    gender,
+    profilePicture,
+    imgForCover,
+  ];
 
-  client.query(sql, values)
-    .then(data => {
+  client
+    .query(sql, values)
+    .then((data) => {
       const createdUser = data.rows[0];
       res.status(201).json(createdUser);
     })
-    .catch(err => {
+    .catch((err) => {
       console.error("Error creating user:", err);
       res.status(500).json({ error: "Failed to create user" });
     });
 }
 
-
-
 function addPortfolioInfo(req, res) {
-  const {userId,fullname,email,phonenum,address,country,profilepic,education,certifications,workexperience,skills,projects,languages} = req.body;
+  const {
+    userId,
+    fullname,
+    email,
+    phonenum,
+    address,
+    country,
+    profilepic,
+    education,
+    certifications,
+    workexperience,
+    skills,
+    projects,
+    languages,
+  } = req.body;
 
   const sql = `
     INSERT INTO portfolio (userId,fullname,email,phonenum,address,country,profilepic,education,certifications,workexperience,skills,projects,languages
@@ -110,18 +223,94 @@ function addPortfolioInfo(req, res) {
   `;
 
   const values = [
-    userId, fullname, email, phonenum, address, country, profilepic, education, certifications, workexperience, skills, projects, languages];
+    userId,
+    fullname,
+    email,
+    phonenum,
+    address,
+    country,
+    profilepic,
+    education,
+    certifications,
+    workexperience,
+    skills,
+    projects,
+    languages,
+  ];
 
-  client.query(sql, values)
-    .then(data => {
+  client
+    .query(sql, values)
+    .then((data) => {
       const createdPortfolio = data.rows[0];
-      res.status(201).json({ message: 'Portfolio information added successfully', portfolio: createdPortfolio });
+      res.status(201).json({
+        message: "Portfolio information added successfully",
+        portfolio: createdPortfolio,
+      });
     })
-    .catch(err => {
+    .catch((err) => {
       console.error("Error adding portfolio information:", err);
       res.status(500).json({ error: "Failed to add portfolio information" });
     });
 }
+
+// routs and handlers for adding , deleting , getting the comments . ..........................
+
+function getCommentsByPost(req, res) {
+  const sql = "SELECT * FROM comments"; // must be changed so it can take post id
+
+  client
+    .query(sql)
+    .then((data) => {
+      const comments = data.rows;
+      res.status(200).json(comments);
+    })
+    .catch((err) => {
+      console.error("Error retrieving comments:", err);
+      res.status(500).json({ error: "Failed to retrieve comments" });
+    });
+}
+
+function addCommentsHandler(req, res) {
+  const { post_id } = req.params;
+  const { content, comment_date, user_id } = req.body;
+
+  const sql = `
+      INSERT INTO comments  (content,comment_date,user_id,post_id)
+        
+      VALUES ($1, $2, $3, $4)`;
+  const values = [content, comment_date, user_id, post_id];
+
+  client
+    .query(sql, values)
+    .then((data) => {
+      const createdComment = data.rows[0];
+      res.status(201).json(createdComment);
+    })
+    .catch((err) => {
+      console.error("Error creating comment", err);
+      res.status(500).json({ error: "Failed to create comment" });
+    });
+}
+
+function deleteCommentsFromPost(req, res) {
+  const comment_id = req.params.id;
+  const sql = "DELETE FROM comments WHERE id = $1";
+  const values = [comment_id];
+  client
+    .query(sql, values)
+    .then(() => {
+      res.status(200).json({ message: "User deleted successfully" });
+    })
+    .catch((err) => {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Failed to delete user" });
+    });
+}
+
+server.get("/posts/{post_id}/comments", getCommentsByPost);
+server.post("/posts/{post_id}/comments", addCommentsHandler);
+server.delete("/posts/{post_id}/comments", deleteCommentsFromPost);
+//.............................................................................................
 
 //-------------------------------------------------------------------------------------------
 //function to handle 404 Errors
@@ -134,12 +323,12 @@ server.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
     status: 500,
-    responseText: 'Sorry, something went wrong'
+    responseText: "Sorry, something went wrong",
   });
 });
 
-client.connect().then(()=>{ 
-server.listen(port, () => {
-  console.log(`server port is ${port}`);
+client.connect().then(() => {
+  server.listen(port, () => {
+    console.log(`server port is ${port}`);
+  });
 });
-})

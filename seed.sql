@@ -12,9 +12,21 @@ VALUES
   (1, 'John Doe', 'johndoe@example.com', '1234567890', '123 Main St', 'USA', 'profile_pic_1.jpg', 'Bachelor of Science in Computer Science', 'Oracle Certified Java Programmer', 'Software Engineer at XYZ Company', 'Java, C++, Python', 'Project 1, Project 2', 'English, Spanish'),
   (2, 'Jane Smith', 'janesmith@example.com', '9876543210', '456 Elm St', 'Canada', 'profile_pic_2.jpg', 'Master of Business Administration', 'Project Management Professional (PMP)', 'Project Manager at ABC Company', 'Project management, Leadership', 'Project 3, Project 4', 'English, French');
 
+-- Insert data into JOBS table
+INSERT INTO jobs (userId, job_field, job_title, job_post_content, job_details)
+VALUES
+    (1,'Information Technology', 'Software Engineer', 'Looking for a skilled software engineer', 'Responsibilities include developing software applications.'),
+    (1,'Information Technology', 'Software Engineer', 'Looking for a skilled software engineer', 'Responsibilities include developing software applications.');
+ 
 -- POSTS table seed data
 INSERT INTO posts (user_id, paragraph_content, photo_content, post_date) VALUES
     (1, 'Hello, this is my first post!', 'photo1.jpg', '2023-05-20'),
     (1, 'I had a great day at the beach!', 'photo2.jpg', '2023-05-21'),
     (2, 'Excited for my upcoming trip!', 'photo3.jpg', '2023-05-22'),
     (3, 'Enjoying the beautiful sunset.', 'photo4.jpg', '2023-05-23');
+
+
+-- comments table seed 
+INSERT INTO comments (content, comment_date, user_id, post_id) VALUES
+('this is comment 1','2023-05-20',1,1 ),
+('this is comment 2','2023-05-21',2,2);
