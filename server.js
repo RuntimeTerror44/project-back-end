@@ -40,7 +40,7 @@ server.get('/users', getUsersHandler)
 server.get('/job',getJobs)
 server.delete('/job/:id',deleteJob) 
 server.post('/addjob',addJob)
-server.get('posts', addPostHandler)
+server.get('/posts', addPostHandler)
 // server.post('/login', handleLogin);
 
 
