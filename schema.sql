@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS usersinfo (
     username VARCHAR(50) ,
     firstName VARCHAR(50),
     lastName VARCHAR(50),
-    email  VARCHAR (100) UNIQUE,
+    email  VARCHAR (100) ,
     dateofbirth DATE,
     country VARCHAR(50),
     city VARCHAR(50),

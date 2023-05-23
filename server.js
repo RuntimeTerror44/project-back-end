@@ -51,8 +51,11 @@ server.get("/", handleHome);                                      //done
 server.get("/users", getUsersHandler);                             //done
 server.post("/users", addUser);                                    //done     
 server.get("/usersbyid", getUserByID);                             //done                    
+// server.get("/usersbyid/:email", getUserByD);                    //done                    
 server.delete("/users", deleteUsersHandler);                       //done
 server.put('/users',updateUser);                                   //done            ##
+server.get ("/posts/:id",getPostByD);
+server.get("/checkemail/:id", checkEmail);
 // ----------------------------------posts-----------------------
 server.get("/posts", getPosts);                                    //done
 server.post("/posts", addPostHandler);                             //done
@@ -75,6 +78,7 @@ server.put('/comments',updateComments);                             //done      
 server.post("/portfolio", addPortfolioInfo);
 
 
+
 // server.post('/login', handleLogin);
 
 
@@ -83,6 +87,25 @@ server.post("/portfolio", addPortfolioInfo);
 // ----------------------------------Home -----------------------
 function handleHome(req, res) {
   res.send("Welcome to Database Home");
+}
+
+
+
+function checkEmail(req, res) {
+  const emailCheck = req.params.id;
+ 
+const values =[emailCheck]
+  const sql = `SELECT * FROM usersinfo WHERE email = $1;`;
+  console.log(sql);
+  client
+    .query(sql,values)
+    .then((data) => {
+      res.status(200).json(data.rows);
+    })
+    .catch((err) => {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Failed to delete user" });
+    });
 }
 
 // ----------------------------------<<  USER INFO  >>-----------------------
@@ -133,6 +156,8 @@ function addUser(req, res) {
 }
 
 
+
+
 function getUsersHandler(req, res) {
   const sql = "SELECT * FROM usersinfo ORDER BY id ASC;";
 
@@ -154,6 +179,20 @@ function getUserByID(req, res) {
   const values = [id];
   client
     .query(sql, values)
+    .then((data) => {
+      res.status(200).json(data.rows);
+    })
+    .catch((err) => {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Failed to delete user" });
+    });
+}
+function getPostByD(req, res) {
+  const getPost = req.params.id;
+  const sql = `SELECT * FROM posts WHERE user_id = ${getPost}`;
+ 
+  client
+    .query(sql)
     .then((data) => {
       res.status(200).json(data.rows);
     })
