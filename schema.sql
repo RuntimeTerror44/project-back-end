@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS usersinfo (
     username VARCHAR(50) ,
     firstName VARCHAR(50),
     lastName VARCHAR(50),
-    email VARCHAR(100) ,
+    email  VARCHAR (100) ,
     dateofbirth DATE,
     country VARCHAR(50),
     city VARCHAR(50),
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS usersinfo (
 );
 
 -- PORTFOLIO table
-DROP TABLE IF EXISTS portfolio;
+DROP TABLE IF EXISTS portfolio ;
 CREATE TABLE IF NOT EXISTS portfolio (
   ID SERIAL PRIMARY KEY,
   userId INT,
