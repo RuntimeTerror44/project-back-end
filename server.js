@@ -69,6 +69,7 @@ server.get("/jobbyfieldcity", getJobsByFieldCity);                  //done
 server.delete("/job/:id", deleteJob);                                   //done
 server.put('/job/:id',updateJob);                                       //done
 // ----------------------------------comment-----------------------
+server.get('/comments', getComments);
 server.get("/comments/:id", getCommentsByPost);                         //done
 server.post("/comments/:id", addCommentsHandler);                    //###############
 server.delete("/comments/:id", deleteCommentsFromPost);                 //done        ##
@@ -453,6 +454,18 @@ function updateJob (req,res){
 
 // ----------------------------------<<  COMMENTS  >>-----------------------
 
+function getComments(req, res) {
+  const sql = "SELECT * FROM comments ORDER BY comment_id DESC;";
+  client.query(sql).then((data) => {
+    const comments = data.rows;
+    res.status(200).json(comments);
+  })
+  .catch((err) => {
+    console.error("Error deleting user:", err);
+    res.status(500).json({ error: "Failed to delete user" });
+  });
+}
+
 function getCommentsByPost(req, res) {
   const post_id  = req.params.id; //post_id
   const values = [post_id];
@@ -498,14 +511,14 @@ function deleteCommentsFromPost(req, res) {
   const comment_id  = req.params.id;   //comment_id
   const value = [comment_id];  
 
-  const { post_id} = req.body;
-  const values = [post_id];
+  // const { post_id} = req.body;
+  // const values = [post_id];
 
   const sql = `DELETE FROM comments WHERE comment_id=${comment_id};`;
   client
     .query(sql)
     .then(() => {
-      const newsql=`SELECT * FROM comments WHERE post_id=${post_id} ORDER BY comment_id ASC;`;  
+      const newsql=`SELECT * FROM comments ORDER BY comment_id ASC;`;  
       client.query(newsql).then((data) => {
         const getComments = data.rows;
         res.status(201).json(getComments);
@@ -522,14 +535,15 @@ function updateComments (req,res){
   const value = [comment_id];
 
   const { content, post_id} = req.body;  
-  const postvalue=[post_id]; 
   const sql = `update comments set content=$1 where comment_id=${comment_id} returning *;`;
 
   const values = [content];   
+  const postvalue=[post_id]; 
 
 
   client.query(sql,values).then((data) => {
-    const newsql = `SELECT * FROM comments WHERE post_id=${post_id} ORDER BY comment_id ASC;`;  
+    const newsql = `SELECT * FROM comments WHERE post_id=${post_id} ORDER BY comment_id ASC;`;   
+    
     client.query(newsql).then ((data) => {
           res.status(201).send(data.rows);
       })    
