@@ -58,6 +58,7 @@ server.put('/users/:id',updateUser);              //------                      
 // ----------------------------------posts-----------------------
 server.get("/posts", getPosts);                                    //done
 server.post("/posts", addPostHandler);                             //done
+server.get('/userposts/:id',getPostByUser);
 server.get("/posts/:id", getPostByID);                         //done
 server.delete("/posts/:id", deletePost);                               //done
 server.put('/posts/:id',updatePost);                                   //done
@@ -269,17 +270,37 @@ function addPostHandler(req, res) {
   client
     .query(sql, values)
     .then((data) => {
-      const newsql=`SELECT * FROM posts ORDER BY post_id DESC;`;
-      client.query(newsql).then((data) => {
-        const posts = data.rows;
-        res.status(201).json(posts);
+      // const newsql=`SELECT * FROM posts ORDER BY post_id DESC;`;
+      // client.query(newsql).then((data) => {
+      //   const posts = data.rows;
+      //   res.status(201).json(posts);
+              res.status(201).json(data.rows);
+
     })
-    })
+    // res.status(201).json({ message: "User deleted successfully" });
+
+    // })
     .catch((err) => {
       console.error("Error adding post:", err);
       res.status(500).json({ error: "Failed to add post" });
     });
 }
+
+function getPostByUser(req, res) {
+  const user_id  = req.params.id;
+  const values = [user_id];
+  const sql = `SELECT * FROM posts WHERE user_id = ${user_id} ORDER BY user_id DESC;`;
+  client
+    .query(sql)
+    .then((data) => {
+      res.status(200).json(data.rows);
+    })
+    .catch((err) => {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Failed to delete user" });
+    });
+}
+
 
 function getPosts(req, res) {
   const sql = "SELECT * FROM posts ORDER BY post_id DESC;";
