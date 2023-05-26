@@ -12,6 +12,42 @@ server.use(express.json());
 // const moviesData = require("./Movie Data/data.json"); get data from json
 // const movieKey = process.env.API_KEY; API KEY
 
+// resume code:
+
+
+const pdf = require("html-pdf");
+const pdfSample = require("./pdf-sample");
+
+
+server.use(express.urlencoded({ extended: true }));
+
+server.post("/create-pdf", (req, res) => {
+  pdf.create(pdfSample(req.body), {}).toFile("Resume.pdf", (err) => {
+    if (err) {
+      res.send(Promise.reject());
+      console.log(err);
+    }
+    res.send(Promise.resolve());
+    console.log("Success");
+  });
+});
+server.get("/welcome", (req, res) => {
+  res.send(`welcome to resume`);
+});
+
+server.get("/fetch-pdf", (req, res) => {
+  res.sendFile(`${__dirname}/Resume.pdf`);
+});
+
+server.use(express.static("../client/build"));
+
+// server.listen(port, () => {
+//   console.log(`Server is running on port=${port}`);
+// });
+// resume code
+
+
+
 // User Info Constructor
 function UserInfo(
   username,
