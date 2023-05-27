@@ -75,6 +75,12 @@ server.get("/comments/:id", getCommentsByPost);                         //done
 server.post("/comments/:id", addCommentsHandler);                    //###############
 server.delete("/comments/:id", deleteCommentsFromPost);                 //done        ##
 server.put('/comments/:id',updateComments);                             //done        ##
+// ----------------------------------comment-----------------------
+server.get('/jobcomments', getjobComments);
+server.get("/jobcomments/:id", getCommentsByjob);                         //done
+server.post("/jobcomments/:id", addjobCommentsHandler);                    //###############
+server.delete("/jobcomments/:id", deleteCommentsFromjob);                 //done        ##
+server.put('/jobcomments/:id',updatejobComments);                             //done        ##
 // ----------------------------------portfolio-----------------------
 server.post("/portfolio", addPortfolioInfo);
 
@@ -228,11 +234,12 @@ function updateUser (req,res){
     city,
     phonenumber,
     address,
+    gender,
     profilepicture,
     imgforcover
   } = req.body;
   
-  const sql = `update usersinfo set username=$1, firstName=$2, lastName=$3, dateofbirth=$4, country=$5, city=$6, phonenumber=$7, address=$8, profilepicture=$9, imgforcover=$10 WHERE id=${userId} returning *;`;
+  const sql = `update usersinfo set username=$1, firstName=$2, lastName=$3, dateofbirth=$4, country=$5, city=$6, phonenumber=$7, address=$8, gender=$9, profilepicture=$10, imgforcover=$11 WHERE id=${userId} returning *;`;
 
   const values = [
     username,
@@ -243,6 +250,7 @@ function updateUser (req,res){
     city,
     phonenumber,
     address,
+    gender,
     profilepicture,
     imgforcover
   ];
@@ -564,6 +572,109 @@ function updateComments (req,res){
 
   client.query(sql,values).then((data) => {
     const newsql = `SELECT * FROM comments WHERE post_id=${post_id} ORDER BY comment_id ASC;`;   
+    
+    client.query(newsql).then ((data) => {
+          res.status(201).send(data.rows);
+      })    
+  })
+  .catch((err) => {
+    console.error("Error creating user:", err);
+    res.status(500).json({ error: "Failed to create user" });
+  });
+}
+
+
+// ----------------------------------<<  JOB COMMENTS  >>-----------------------
+
+function getjobComments(req, res) {
+  const sql = "SELECT * FROM jobcomments ORDER BY comment_id DESC;";
+  client.query(sql).then((data) => {
+    const comments = data.rows;
+    res.status(200).json(comments);
+  })
+  .catch((err) => {
+    console.error("Error deleting user:", err);
+    res.status(500).json({ error: "Failed to delete user" });
+  });
+}
+
+function getCommentsByjob(req, res) {
+  const job_id  = req.params.id; //post_id
+  const values = [job_id];
+  const sql = `SELECT * FROM jobcomments WHERE job_id=${job_id} ORDER BY comment_id ASC;`;
+  client
+    .query(sql)
+    .then((data) => {
+      const users = data.rows;
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      console.error("Error retrieving users:", err);
+      res.status(500).json({ error: "Failed to retrieve users" });
+    });
+}
+
+function addjobCommentsHandler(req, res) {
+  const job_id  = req.params.id;   //post_id
+  const value = [job_id];  
+  const { content, comment_date, user_id} = req.body;
+  const sql = `
+      INSERT INTO jobcomments  (content,comment_date,user_id,job_id) VALUES ($1,$2,$3,${job_id})`; 
+  const values = [content, comment_date, user_id];
+
+  client
+    .query(sql, values)
+    .then((data) => {
+      const newsql=`SELECT * FROM jobcomments WHERE job_id = ${job_id} ORDER BY comment_id ASC;`;     
+      client.query(newsql).then((data) => {
+        const getComments = data.rows;
+        res.status(201).json(getComments);
+      })
+
+      
+    })
+    .catch((err) => {
+      console.error("Error creating comment", err);
+      res.status(500).json({ error: "Failed to create comment" });
+    });
+}
+
+function deleteCommentsFromjob(req, res) {    
+  const comment_id  = req.params.id;   //comment_id
+  const value = [comment_id];  
+
+  // const { post_id} = req.body;
+  // const values = [post_id];
+
+  const sql = `DELETE FROM jobcomments WHERE comment_id=${comment_id};`;
+  client
+    .query(sql)
+    .then(() => {
+      const newsql=`SELECT * FROM jobcomments ORDER BY comment_id ASC;`;  
+      client.query(newsql).then((data) => {
+        const getComments = data.rows;
+        res.status(201).json(getComments);
+      }) 
+    })
+    .catch((err) => {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Failed to delete user" });
+    });
+}
+
+function updatejobComments (req,res){        
+  const comment_id  = req.params.id;   /////coment ID
+  const value = [comment_id];
+
+  const { content, job_id} = req.body;  
+  const sql = `update jobcomments set content=$1 where comment_id=${comment_id} returning *;`;
+
+  const values = [content];   
+  const postvalue=[job_id]; 
+
+
+  client.query(sql,values).then((data) => {
+    const newsql = `SELECT * FROM jobcomments WHERE job_id=${job_id} ORDER BY comment_id ASC;`;   
     
     client.query(newsql).then ((data) => {
           res.status(201).send(data.rows);

@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS portfolio (
   languages TEXT
 );
 --jobs table
-DROP TABLE IF EXISTS jobs ;
+DROP TABLE IF EXISTS jobs CASCADE;
 CREATE TABLE IF NOT EXISTS jobs(
 ID SERIAL PRIMARY KEY,
 userId INTEGER REFERENCES usersinfo(id) ON DELETE CASCADE,
@@ -65,4 +65,15 @@ CREATE TABLE IF NOT EXISTS comments (
   comment_date DATE,
   user_id INTEGER REFERENCES usersinfo(id) ON DELETE CASCADE,
   post_id  INTEGER REFERENCES posts(post_id) ON DELETE CASCADE     
+);
+
+
+-- Jobs comments table
+DROP TABLE IF EXISTS jobcomments;
+CREATE TABLE IF NOT EXISTS jobcomments (
+  comment_id SERIAL PRIMARY KEY,
+  content TEXT,
+  comment_date DATE,
+  user_id INTEGER REFERENCES usersinfo(id) ON DELETE CASCADE,
+  job_id  INTEGER REFERENCES jobs (ID) ON DELETE CASCADE     
 );

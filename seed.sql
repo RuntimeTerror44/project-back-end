@@ -37,3 +37,12 @@ INSERT INTO comments (content, comment_date, user_id, post_id) VALUES
 ('this is comment 1','2023-05-20',2,2 ),
 ('this is comment 1','2023-05-20',3,1 ),
 ('this is comment 2','2023-05-21',5,2);
+
+-- JOB comments table seed
+INSERT INTO comments (content, comment_date, user_id, job_id) VALUES
+('this is comment 1','2023-05-20',1,1 ),
+('this is comment 2','2023-05-21',4,1),
+('this is comment 1','2023-05-20',1,2 ),
+('this is comment 1','2023-05-20',2,2 ),
+('this is comment 1','2023-05-20',3,1 ),
+('this is comment 2','2023-05-21',5,2);
