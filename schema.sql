@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS usersinfo (
     firstName VARCHAR(50),
     lastName VARCHAR(50),
     email  VARCHAR (100) ,
-    dateofbirth DATE,
+    dateofbirth VARCHAR(50),
     country VARCHAR(50),
     city VARCHAR(50),
     phonenumber VARCHAR(20),

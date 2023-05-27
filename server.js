@@ -270,12 +270,12 @@ function updateUser (req,res){
     city,
     phonenumber,
     address,
-    gender,
+    // gender,
     profilepicture,
     imgforcover
   } = req.body;
   
-  const sql = `update usersinfo set username=$1, firstName=$2, lastName=$3, dateofbirth=$4, country=$5, city=$6, phonenumber=$7, address=$8, gender=$9, profilepicture=$10, imgforcover=$11 WHERE id=${userId} returning *;`;
+  const sql = `update usersinfo set username=$1, firstName=$2, lastName=$3, dateofbirth=$4, country=$5, city=$6, phonenumber=$7, address=$8, profilepicture=$9, imgforcover=$10 WHERE id=${userId} returning *;`;
 
   const values = [
     username,
@@ -286,7 +286,7 @@ function updateUser (req,res){
     city,
     phonenumber,
     address,
-    gender,
+    // gender,
     profilepicture,
     imgforcover
   ];
@@ -558,7 +558,7 @@ function addCommentsHandler(req, res) {
   client
     .query(sql, values)
     .then((data) => {
-      const newsql=`SELECT * FROM comments WHERE post_id = ${post_id} ORDER BY comment_id ASC;`;     
+      const newsql=`SELECT * FROM comments INNER JOIN usersinfo ON comments.user_id = usersinfo.id WHERE post_id = ${post_id} ORDER BY comment_id ASC;`;     
       client.query(newsql).then((data) => {
         const getComments = data.rows;
         res.status(201).json(getComments);
