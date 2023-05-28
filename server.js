@@ -337,16 +337,16 @@ function addPostHandler(req, res) {
 function getPostByUser(req, res) {
   const user_id  = req.params.id;
   const values = [user_id];
-  const sql = `SELECT * FROM posts WHERE user_id = ${user_id} ORDER BY user_id ASC;`;
+  const sql = `SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id WHERE user_id = ${user_id} ORDER BY post_id ASC;`;
   client
     .query(sql)
     .then((data) => {
-      const newsql=`SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id WHERE user_id = ${user_id} ORDER BY post_id ASC`;
-      client.query(newsql).then((data) => {
-        const posts = data.rows;
-        res.status(201).json(posts);
+      // const newsql=`SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id WHERE user_id = ${user_id} ORDER BY post_id ASC`;
+      // client.query(newsql).then((data) => {
+      //   const posts = data.rows;
+        res.status(200).json(data.rows);
     })
-      })
+      // })
     .catch((err) => {
       console.error("Error deleting user:", err);
       res.status(500).json({ error: "Failed to delete user" });
