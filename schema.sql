@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS usersinfo (
     address VARCHAR(100),
     gender VARCHAR(10),
     profilepicture VARCHAR(255),
-    imgforcover VARCHAR(255)
+    imgforcover VARCHAR(255),
+    career VARCHAR(50)
+
 );
 
 -- PORTFOLIO table

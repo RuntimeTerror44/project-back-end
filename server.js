@@ -166,12 +166,13 @@ function addUser(req, res) {
     gender,
     profilepicture,
     imgforcover,
+    career,
   } = req.body;
   const sql = `
     INSERT INTO usersinfo (
       username,firstName, lastName,email, dateofbirth, country, city,
-      phonenumber, address, gender, profilepicture, imgforcover)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11,$12) RETURNING *;`;
+      phonenumber, address, gender, profilepicture, imgforcover, career)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10,$11,$12,$13) RETURNING *;`;
   const values = [
     username,
     firstName,
@@ -185,6 +186,7 @@ function addUser(req, res) {
     gender,
     profilepicture,
     imgforcover,
+    career,
   ];
 
   client
@@ -270,12 +272,13 @@ function updateUser (req,res){
     city,
     phonenumber,
     address,
-    // gender,
     profilepicture,
-    imgforcover
+    imgforcover,
+    career,
+    gender     ///////////////////
   } = req.body;
   
-  const sql = `update usersinfo set username=$1, firstName=$2, lastName=$3, dateofbirth=$4, country=$5, city=$6, phonenumber=$7, address=$8, profilepicture=$9, imgforcover=$10 WHERE id=${userId} returning *;`;
+  const sql = `update usersinfo set username=$1, firstName=$2, lastName=$3, dateofbirth=$4, country=$5, city=$6, phonenumber=$7, address=$8, profilepicture=$9, imgforcover=$10, career=$11, gender=$12 WHERE id=${userId} returning *;`;
 
   const values = [
     username,
@@ -286,9 +289,10 @@ function updateUser (req,res){
     city,
     phonenumber,
     address,
-    // gender,
     profilepicture,
-    imgforcover
+    imgforcover,
+    career,
+    gender   //////////////////
   ];
 
   client.query(sql,values).then((data) => {
@@ -314,16 +318,16 @@ function addPostHandler(req, res) {
   client
     .query(sql, values)
     .then((data) => {
-      // const newsql=`SELECT * FROM posts ORDER BY post_id DESC;`;
-      // client.query(newsql).then((data) => {
-      //   const posts = data.rows;
-      //   res.status(201).json(posts);
-              res.status(201).json(data.rows);
+      // SELECT * FROM comments INNER JOIN usersinfo ON comments.user_id = usersinfo.id WHERE user_id = ${user_id} ORDER BY comment_id ASC;
+
+      const newsql=`SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id ORDER BY post_id DESC`;
+      client.query(newsql).then((data) => {
+        const posts = data.rows;
+        res.status(201).json(posts);
+              // res.status(201).json(data.rows);
 
     })
-    // res.status(201).json({ message: "User deleted successfully" });
-
-    // })
+    })
     .catch((err) => {
       console.error("Error adding post:", err);
       res.status(500).json({ error: "Failed to add post" });
@@ -337,8 +341,12 @@ function getPostByUser(req, res) {
   client
     .query(sql)
     .then((data) => {
-      res.status(200).json(data.rows);
+      const newsql=`SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id WHERE user_id = ${user_id} ORDER BY post_id ASC`;
+      client.query(newsql).then((data) => {
+        const posts = data.rows;
+        res.status(201).json(posts);
     })
+      })
     .catch((err) => {
       console.error("Error deleting user:", err);
       res.status(500).json({ error: "Failed to delete user" });
@@ -347,8 +355,8 @@ function getPostByUser(req, res) {
 
 
 function getPosts(req, res) {
-  const sql = "SELECT * FROM posts ORDER BY post_id DESC;";
-
+  const sql = `SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id ORDER BY post_id DESC;`;  //WHERE user_id = ${user_id}
+ 
   client.query(sql).then((data) => {
     const users = data.rows;
     res.status(200).json(users);
@@ -362,7 +370,7 @@ function getPosts(req, res) {
 function getPostByID(req, res) {
   const post_id  = req.params.id;
   const values = [post_id];
-  const sql = `SELECT * FROM posts WHERE post_id = ${post_id} ORDER BY user_id DESC;`;
+  const sql = `SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id WHERE post_id = ${post_id} ORDER BY post_id DESC`;
   client
     .query(sql)
     .then((data) => {
@@ -381,7 +389,7 @@ function deletePost(req, res) {
   client
     .query(sql)
     .then(() => {
-      const newsql=`SELECT * FROM posts ORDER BY post_id DESC;`;
+      const newsql=`SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id ORDER BY post_id DESC;`;
       client.query(newsql).then((data) => {
         const posts = data.rows;
         res.status(201).json(posts);
@@ -400,7 +408,7 @@ function updatePost (req,res){
 
     const values = [ paragraph_content, photo_content];
     client.query(sql,values).then((data) => {
-        const newsql = 'SELECT * FROM posts ORDER BY post_id DESC;';
+        const newsql = 'SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id ORDER BY post_id DESC';
         client.query(newsql).then ((data) => {
             res.status(201).send(data.rows);
         })    
@@ -419,7 +427,7 @@ function addJob(req, res) {
   client
     .query(sql, values)
     .then((data) => {
-      const newsql=`SELECT * FROM jobs ORDER BY ID DESC;`;
+      const newsql=`SELECT * FROM jobs INNER JOIN usersinfo ON jobs.userId = usersinfo.id ORDER BY ID DESC;`;
       client.query(newsql).then((data) => {
         const jobs = data.rows;
         res.status(201).json(jobs);
@@ -432,7 +440,7 @@ function addJob(req, res) {
 }
 
 function getJobs(req, res) {
-  const sql = "SELECT * FROM jobs ORDER BY ID DESC;";
+  const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.userId = usersinfo.id ORDER BY ID DESC;`;
 
   client.query(sql).then((data) => {
     const jobs = data.rows;
@@ -446,7 +454,7 @@ function getJobs(req, res) {
 
 function getJobsByFieldCity(req, res) {
   const { job_field, city } = req.body;
-  const sql = "SELECT * FROM jobs WHERE job_field = $1 AND city=$2 ORDER BY ID DESC;";
+  const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.userId = usersinfo.id WHERE job_field = $1 AND city=$2 ORDER BY ID DESC;`;
   const values = [job_field, city];
   client
     .query(sql, values)
@@ -483,7 +491,7 @@ function deleteJob(req, res) {
   client
     .query(sql)
     .then(() => {
-      const newsql=`SELECT * FROM jobs ORDER BY ID DESC;`
+      const newsql=`SELECT * FROM jobs INNER JOIN usersinfo ON jobs.userId = usersinfo.id ORDER BY ID DESC;`;
       client.query(newsql).then((data) => {
         const jobs = data.rows;
         res.status(201).json(jobs);
@@ -505,7 +513,7 @@ function updateJob (req,res){
   const values = [ job_field, job_title, city, job_post_content];
 
   client.query(sql,values).then((data) => {
-    const newsql = 'SELECT * FROM jobs ORDER BY ID DESC;';
+    const newsql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.userId = usersinfo.id ORDER BY ID DESC;`;
     client.query(newsql).then ((data) => {
           res.status(201).send(data.rows);
       })    
@@ -520,7 +528,7 @@ function updateJob (req,res){
 // ----------------------------------<<  COMMENTS  >>-----------------------
 
 function getComments(req, res) {
-  const sql = "SELECT * FROM comments ORDER BY comment_id DESC;";
+  const sql = `SELECT * FROM comments INNER JOIN usersinfo ON comments.user_id = usersinfo.id ORDER BY comment_id ASC;`;
   client.query(sql).then((data) => {
     const comments = data.rows;
     res.status(200).json(comments);
@@ -534,7 +542,7 @@ function getComments(req, res) {
 function getCommentsByPost(req, res) {
   const post_id  = req.params.id; //post_id
   const values = [post_id];
-  const sql = `SELECT * FROM comments WHERE post_id=${post_id} ORDER BY comment_id ASC;`;
+  const sql = `SELECT * FROM comments INNER JOIN usersinfo ON comments.user_id = usersinfo.id WHERE post_id = ${post_id} ORDER BY comment_id ASC;`;
   client
     .query(sql)
     .then((data) => {
@@ -558,7 +566,8 @@ function addCommentsHandler(req, res) {
   client
     .query(sql, values)
     .then((data) => {
-      const newsql=`SELECT * FROM comments INNER JOIN usersinfo ON comments.user_id = usersinfo.id WHERE post_id = ${post_id} ORDER BY comment_id ASC;`;     
+      const newsql=`SELECT * FROM comments INNER JOIN usersinfo ON comments.user_id = usersinfo.id WHERE post_id = ${post_id} ORDER BY comment_id ASC;`;   
+        
       client.query(newsql).then((data) => {
         const getComments = data.rows;
         res.status(201).json(getComments);
@@ -583,7 +592,7 @@ function deleteCommentsFromPost(req, res) {
   client
     .query(sql)
     .then(() => {
-      const newsql=`SELECT * FROM comments ORDER BY comment_id ASC;`;  
+      const newsql=`SELECT * FROM comments INNER JOIN usersinfo ON comments.user_id = usersinfo.id ORDER BY comment_id ASC;`;  
       client.query(newsql).then((data) => {
         const getComments = data.rows;
         res.status(201).json(getComments);
@@ -607,7 +616,7 @@ function updateComments (req,res){
 
 
   client.query(sql,values).then((data) => {
-    const newsql = `SELECT * FROM comments WHERE post_id=${post_id} ORDER BY comment_id ASC;`;   
+    const newsql = `SELECT * FROM comments INNER JOIN usersinfo ON comments.user_id = usersinfo.id WHERE post_id = ${post_id} ORDER BY comment_id ASC;`;   
     
     client.query(newsql).then ((data) => {
           res.status(201).send(data.rows);
@@ -623,7 +632,7 @@ function updateComments (req,res){
 // ----------------------------------<<  JOB COMMENTS  >>-----------------------
 
 function getjobComments(req, res) {
-  const sql = "SELECT * FROM jobcomments ORDER BY comment_id DESC;";
+  const sql = `SELECT * FROM jobcomments INNER JOIN usersinfo ON jobcomments.user_id = usersinfo.id ORDER BY comment_id ASC;`;
   client.query(sql).then((data) => {
     const comments = data.rows;
     res.status(200).json(comments);
@@ -637,7 +646,7 @@ function getjobComments(req, res) {
 function getCommentsByjob(req, res) {
   const job_id  = req.params.id; //post_id
   const values = [job_id];
-  const sql = `SELECT * FROM jobcomments WHERE job_id=${job_id} ORDER BY comment_id ASC;`;
+  const sql = `SELECT * FROM jobcomments INNER JOIN usersinfo ON jobcomments.user_id = usersinfo.id WHERE job_id=${job_id} ORDER BY comment_id ASC;`;
   client
     .query(sql)
     .then((data) => {
@@ -661,7 +670,7 @@ function addjobCommentsHandler(req, res) {
   client
     .query(sql, values)
     .then((data) => {
-      const newsql=`SELECT * FROM jobcomments WHERE job_id = ${job_id} ORDER BY comment_id ASC;`;     
+      const newsql=`SELECT * FROM jobcomments INNER JOIN usersinfo ON jobcomments.user_id = usersinfo.id WHERE job_id=${job_id} ORDER BY comment_id ASC;`;     
       client.query(newsql).then((data) => {
         const getComments = data.rows;
         res.status(201).json(getComments);
@@ -686,7 +695,7 @@ function deleteCommentsFromjob(req, res) {
   client
     .query(sql)
     .then(() => {
-      const newsql=`SELECT * FROM jobcomments ORDER BY comment_id ASC;`;  
+      const newsql=`SELECT * FROM jobcomments INNER JOIN usersinfo ON jobcomments.user_id = usersinfo.id ORDER BY comment_id ASC;`;  
       client.query(newsql).then((data) => {
         const getComments = data.rows;
         res.status(201).json(getComments);
@@ -710,7 +719,7 @@ function updatejobComments (req,res){
 
 
   client.query(sql,values).then((data) => {
-    const newsql = `SELECT * FROM jobcomments WHERE job_id=${job_id} ORDER BY comment_id ASC;`;   
+    const newsql = `SELECT * FROM jobcomments INNER JOIN usersinfo ON jobcomments.user_id = usersinfo.id WHERE job_id=${job_id} ORDER BY comment_id ASC;`;   
     
     client.query(newsql).then ((data) => {
           res.status(201).send(data.rows);
