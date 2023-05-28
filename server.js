@@ -385,6 +385,9 @@ function getPostByID(req, res) {
 function deletePost(req, res) {
   const post_id  = req.params.id;
   const values = [post_id];
+
+  // const {user_id}  = req.body;
+  // const value = [user_id];
   const sql = `DELETE FROM posts WHERE post_id = ${post_id};`;
   client
     .query(sql)
@@ -403,10 +406,11 @@ function deletePost(req, res) {
 function updatePost (req,res){
   const post_id  = req.params.id;
   const value = [post_id];
-    const { paragraph_content, photo_content} = req.body;
-    const sql = `update posts set paragraph_content=$1, photo_content=$2 where post_id=${post_id} returning *;`;
 
-    const values = [ paragraph_content, photo_content];
+    const { paragraph_content, photo_content, user_id} = req.body;
+    const sql = `update posts set paragraph_content=$1, photo_content=$2 where post_id=${post_id} AND user_id=$3 returning *;`;
+
+    const values = [ paragraph_content, photo_content, user_id];
     client.query(sql,values).then((data) => {
         const newsql = 'SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id ORDER BY post_id DESC';
         client.query(newsql).then ((data) => {
@@ -487,6 +491,10 @@ function getJobsByFieldCity(req, res) {
 function deleteJob(req, res) {
   const job_id  = req.params.id;
   const values = [job_id];
+
+  // const {userId}  = req.body;
+  // const value = [userId];
+
   const sql = `DELETE FROM jobs WHERE ID = ${job_id};`;
   client
     .query(sql)
@@ -505,12 +513,13 @@ function deleteJob(req, res) {
 
 function updateJob (req,res){
   const job_id  = req.params.id;
-  const value = [job_id];  
-  const { job_field, job_title, city, job_post_content} = req.body;
-  const sql = `update jobs set job_field=$1, job_title=$2, city=$3, job_post_content=$4 where ID=${job_id} returning *;`;
+  const value = [job_id]; 
+
+  const { job_field, job_title, city, job_post_content, userId} = req.body;
+  const sql = `update jobs set job_field=$1, job_title=$2, city=$3, job_post_content=$4 where ID=${job_id} AND userId=$5 returning *;`;
 
 
-  const values = [ job_field, job_title, city, job_post_content];
+  const values = [ job_field, job_title, city, job_post_content, userId];
 
   client.query(sql,values).then((data) => {
     const newsql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.userId = usersinfo.id ORDER BY ID DESC;`;
@@ -585,10 +594,11 @@ function deleteCommentsFromPost(req, res) {
   const comment_id  = req.params.id;   //comment_id
   const value = [comment_id];  
 
-  // const { post_id} = req.body;
-  // const values = [post_id];
-
+  // const { user_id} = req.body;
   const sql = `DELETE FROM comments WHERE comment_id=${comment_id};`;
+
+  // const values = [user_id];
+
   client
     .query(sql)
     .then(() => {
@@ -608,10 +618,10 @@ function updateComments (req,res){
   const comment_id  = req.params.id;   /////coment ID
   const value = [comment_id];
 
-  const { content, post_id} = req.body;  
-  const sql = `update comments set content=$1 where comment_id=${comment_id} returning *;`;
+  const { content, post_id, user_id} = req.body;  
+  const sql = `update comments set content=$1 where comment_id=${comment_id} AND user_id=$2 returning *;`;
 
-  const values = [content];   
+  const values = [content, user_id];   
   const postvalue=[post_id]; 
 
 
@@ -688,8 +698,8 @@ function deleteCommentsFromjob(req, res) {
   const comment_id  = req.params.id;   //comment_id
   const value = [comment_id];  
 
-  // const { post_id} = req.body;
-  // const values = [post_id];
+  // const { user_id} = req.body;
+  // const values = [user_id];
 
   const sql = `DELETE FROM jobcomments WHERE comment_id=${comment_id};`;
   client
@@ -711,10 +721,10 @@ function updatejobComments (req,res){
   const comment_id  = req.params.id;   /////coment ID
   const value = [comment_id];
 
-  const { content, job_id} = req.body;  
-  const sql = `update jobcomments set content=$1 where comment_id=${comment_id} returning *;`;
+  const { content, job_id, user_id} = req.body;  
+  const sql = `update jobcomments set content=$1 where comment_id=${comment_id} AND user_id=$2returning *;`;
 
-  const values = [content];   
+  const values = [content, user_id];   
   const postvalue=[job_id]; 
 
 
