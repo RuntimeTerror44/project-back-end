@@ -333,7 +333,7 @@ function addPostHandler(req, res) {
 function getPostByUser(req, res) {
   const user_id  = req.params.id;
   const values = [user_id];
-  const sql = `SELECT * FROM posts WHERE user_id = ${user_id} ORDER BY user_id DESC;`;
+  const sql = `SELECT * FROM posts WHERE user_id = ${user_id} ORDER BY user_id ASC;`;
   client
     .query(sql)
     .then((data) => {
