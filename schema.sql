@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS portfolio (
 --jobs table
 DROP TABLE IF EXISTS jobs CASCADE;
 CREATE TABLE IF NOT EXISTS jobs(
-id SERIAL PRIMARY KEY,
+job_id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES usersinfo(id) ON DELETE CASCADE,
 job_field VARCHAR(255),
 job_title VARCHAR(255),
@@ -77,5 +77,5 @@ CREATE TABLE IF NOT EXISTS jobcomments (
   content TEXT,
   comment_date DATE,
   user_id INTEGER REFERENCES usersinfo(id) ON DELETE CASCADE,
-  job_id  INTEGER REFERENCES jobs (id) ON DELETE CASCADE     
+  job_id  INTEGER REFERENCES jobs (job_id) ON DELETE CASCADE     
 );

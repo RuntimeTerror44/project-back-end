@@ -431,7 +431,7 @@ function addJob(req, res) {
   client
     .query(sql, VALUES)
     .then((data) => {
-      const newsql=`SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id ORDER BY jobs.id DESC;`;
+      const newsql=`SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id ORDER BY job_id DESC;`;
       client.query(newsql).then((data) => {
         const jobs = data.rows;
         res.status(201).json(jobs);
@@ -444,7 +444,7 @@ function addJob(req, res) {
 }
 
 function getJobs(req, res) {
-  const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id ORDER BY jobs.id DESC;`;
+  const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id ORDER BY job_id DESC;`;
 
   client.query(sql).then((data) => {
     const jobs = data.rows;
@@ -458,7 +458,7 @@ function getJobs(req, res) {
 
 function getJobsByFieldCity(req, res) {
   const { job_field, city } = req.body;
-  const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id WHERE job_field = $1 AND city=$2 ORDER BY jobs.id DESC;`;
+  const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id WHERE job_field = $1 AND city=$2 ORDER BY job_id DESC;`;
   const values = [job_field, city];
   client
     .query(sql, values)
@@ -495,11 +495,11 @@ function deleteJob(req, res) {
   // const {userId}  = req.body;
   // const value = [userId];
 
-  const sql = `DELETE FROM jobs WHERE id = ${job_id};`;
+  const sql = `DELETE FROM jobs WHERE job_id = ${job_id};`;
   client
     .query(sql)
     .then(() => {
-      const newsql=`SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id ORDER BY jobs.id DESC;`;
+      const newsql=`SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id ORDER BY job_id DESC;`;
       client.query(newsql).then((data) => {
         const jobs = data.rows;
         res.status(201).json(jobs);
@@ -516,13 +516,13 @@ function updateJob (req,res){
   const value = [job_id]; 
 
   const { job_field, job_title, city, job_post_content, user_id} = req.body;
-  const sql = `update jobs set job_field=$1, job_title=$2, city=$3, job_post_content=$4 where id=${job_id} AND user_id=$5 returning *;`;
+  const sql = `update jobs set job_field=$1, job_title=$2, city=$3, job_post_content=$4 where job_id=${job_id} AND user_id=$5 returning *;`;
 
 
   const values = [ job_field, job_title, city, job_post_content, user_id];
 
   client.query(sql,values).then((data) => {
-    const newsql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id ORDER BY jobs.id DESC;`;
+    const newsql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id ORDER BY job_id DESC;`;
     client.query(newsql).then ((data) => {
           res.status(201).send(data.rows);
       })    
