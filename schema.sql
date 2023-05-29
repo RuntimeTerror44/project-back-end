@@ -43,7 +43,7 @@ job_id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES usersinfo(id) ON DELETE CASCADE,
 job_field VARCHAR(255),
 job_title VARCHAR(255),
-city VARCHAR(50),
+job_city VARCHAR(50),
 job_post_content VARCHAR(255)
 );
 
