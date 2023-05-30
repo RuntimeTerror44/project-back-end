@@ -80,10 +80,3 @@ CREATE TABLE IF NOT EXISTS jobcomments (
   job_id  INTEGER REFERENCES jobs (job_id) ON DELETE CASCADE     
 );
 
--- Jobs Search table
-DROP TABLE IF EXISTS jobsearch;
-CREATE TABLE IF NOT EXISTS jobsearch (
-  search_id SERIAL PRIMARY KEY,
-  job_search_field TEXT,
-  job_search_city TEXT
-);

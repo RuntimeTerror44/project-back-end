@@ -90,6 +90,9 @@ server.get("/users/:id", getUserByID);             //----                //done
 server.delete("/users/:id", deleteUsersHandler);  //----                     //done
 server.put('/users/:id',updateUser);              //------                       //done  
 
+
+server.post('/userssamecareer',getSameCareer);              //------                       //done  
+
 // server.get("/checkemail/:id", checkEmail);
 // ----------------------------------posts-----------------------
 server.get("/posts", getPosts);                                    //done
@@ -133,6 +136,20 @@ function handleHome(req, res) {
 }
 
 
+function getSameCareer(req, res) {
+  const { career } = req.body;
+  const sql = `SELECT * FROM usersinfo WHERE career=$1 ORDER BY id DESC;`;   //ORDER BY DESC
+  const values = [career];
+  client
+    .query(sql, values)
+    .then((data) => {
+     
+        res.status(200).json(data.rows)}) 
+    .catch((err) => {
+      console.error("Error deleting user:", err);
+      res.status(500).json({ error: "Failed to delete user" });
+    });
+}
 
 // function checkEmail(req, res) {
 //   const emailCheck = req.params.id;
@@ -458,7 +475,6 @@ function getJobs(req, res) {
 
 function getJobsByFieldCity(req, res) {
   const { job_field, job_city } = req.body;
-  console.log(req.body);
   const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id WHERE job_field LIKE $1 AND job_city LIKE $2 ORDER BY job_id DESC;`;
   const values = [job_field, job_city];
   client

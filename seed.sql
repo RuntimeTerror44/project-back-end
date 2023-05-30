@@ -1,13 +1,13 @@
 -- Insert sample user data
 INSERT INTO usersinfo (
   username, firstName, lastName, email, dateofbirth, country, city,
-  phonenumber, address, gender, profilepicture, imgforcover)
+  phonenumber, address, gender, profilepicture, imgforcover, career)
 VALUES
-  ('john11', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'https://t4.ftcdn.net/jpg/00/73/21/11/240_F_73211193_D9zi1Y4DiSTjJ8rxPBPj0ihliPHAK00N.jpg', 'cover.jpg'),
-  ('jane22', 'Jane', 'Smith', 'janesmith@example.com', '1985-02-15', 'Canada', 'Toronto', '+987654321', '456 Elm St', 'Female', 'https://t4.ftcdn.net/jpg/02/36/01/13/240_F_236011345_3W03mLyEwnqy7NmLPjRAkIRJWxMu9Rp3.jpg', 'banner.jpg'),
-  ('john33', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'https://t4.ftcdn.net/jpg/02/83/34/87/240_F_283348729_wcG8rvBF5f1VfPGKy916pIcmgGk0PK7B.jpg', 'cover.jpg'),
-  ('john44', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'https://t3.ftcdn.net/jpg/04/43/35/26/240_F_443352684_jFBzQhRy3drUvmomHyztAnWUyoUhifPG.jpg', 'cover.jpg'),
-  ('john55', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'https://t4.ftcdn.net/jpg/03/68/16/33/240_F_368163351_a0dHndWi59lzACdREInXaQxPanMzLKgl.jpg', 'cover.jpg');
+  ('john11', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'https://t4.ftcdn.net/jpg/00/73/21/11/240_F_73211193_D9zi1Y4DiSTjJ8rxPBPj0ihliPHAK00N.jpg', 'cover.jpg','Software Engineer'),
+  ('jane22', 'Jane', 'Smith', 'janesmith@example.com', '1985-02-15', 'Canada', 'Toronto', '+987654321', '456 Elm St', 'Female', 'https://t4.ftcdn.net/jpg/02/36/01/13/240_F_236011345_3W03mLyEwnqy7NmLPjRAkIRJWxMu9Rp3.jpg', 'banner.jpg', 'Information Technology'),
+  ('john33', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'https://t4.ftcdn.net/jpg/02/83/34/87/240_F_283348729_wcG8rvBF5f1VfPGKy916pIcmgGk0PK7B.jpg', 'cover.jpg', 'Electrical Engineer'),
+  ('john44', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'https://t3.ftcdn.net/jpg/04/43/35/26/240_F_443352684_jFBzQhRy3drUvmomHyztAnWUyoUhifPG.jpg', 'cover.jpg', 'Electrical Engineer'),
+  ('john55', 'John', 'Doe', 'johndoe@example.com', '1990-01-01', 'USA', 'New York', '+123456789', '123 Main St', 'Male', 'https://t4.ftcdn.net/jpg/03/68/16/33/240_F_368163351_a0dHndWi59lzACdREInXaQxPanMzLKgl.jpg', 'cover.jpg', 'Electrical Engineer');
 -- Insert data into PORTFOLIO table
 INSERT INTO portfolio (userId, fullname, email, phonenum, address, country, profilepic, education, certifications, workexperience, skills, projects, languages)
 VALUES
