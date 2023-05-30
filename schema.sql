@@ -43,7 +43,7 @@ job_id SERIAL PRIMARY KEY,
 user_id INTEGER REFERENCES usersinfo(id) ON DELETE CASCADE,
 job_field VARCHAR(255),
 job_title VARCHAR(255),
-job_city VARCHAR(50),
+job_city VARCHAR(255),
 job_post_content VARCHAR(255)
 );
 
@@ -78,4 +78,12 @@ CREATE TABLE IF NOT EXISTS jobcomments (
   comment_date DATE,
   user_id INTEGER REFERENCES usersinfo(id) ON DELETE CASCADE,
   job_id  INTEGER REFERENCES jobs (job_id) ON DELETE CASCADE     
+);
+
+-- Jobs Search table
+DROP TABLE IF EXISTS jobsearch;
+CREATE TABLE IF NOT EXISTS jobsearch (
+  search_id SERIAL PRIMARY KEY,
+  job_search_field TEXT,
+  job_search_city TEXT
 );

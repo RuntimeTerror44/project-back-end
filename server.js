@@ -101,7 +101,7 @@ server.put('/posts/:id',updatePost);                                   //done
 // ----------------------------------jobss-----------------------
 server.get("/job", getJobs);                                        //done
 server.post("/job", addJob);                                        //done
-server.get("/jobbyfieldcity", getJobsByFieldCity);                  //done
+server.post("/jobbyfieldcity", getJobsByFieldCity);                  //done
 // server.get("/jobbyfield", getJobsByField);
 server.delete("/job/:id", deleteJob);                                   //done
 server.put('/job/:id',updateJob);                                       //done
@@ -337,7 +337,7 @@ function addPostHandler(req, res) {
 function getPostByUser(req, res) {
   const user_id  = req.params.id;
   const values = [user_id];
-  const sql = `SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id WHERE user_id = ${user_id} ORDER BY post_id ASC;`;
+  const sql = `SELECT * FROM posts INNER JOIN usersinfo ON posts.user_id = usersinfo.id WHERE user_id = ${user_id} ORDER BY post_id DESC;`;
   client
     .query(sql)
     .then((data) => {
@@ -458,23 +458,43 @@ function getJobs(req, res) {
 
 function getJobsByFieldCity(req, res) {
   const { job_field, job_city } = req.body;
-  const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id WHERE job_field = $1 AND job_city=$2 ORDER BY job_id DESC;`;
+  console.log(req.body);
+  const sql = `SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id WHERE job_field LIKE $1 AND job_city LIKE $2 ORDER BY job_id DESC;`;
   const values = [job_field, job_city];
   client
     .query(sql, values)
     .then((data) => {
-        const getJobsByFieldCity = data.rows;
-        res.status(201).json(getJobsByFieldCity);
-      })    
+     
+        res.status(201).json(data.rows)}) 
     .catch((err) => {
       console.error("Error deleting user:", err);
       res.status(500).json({ error: "Failed to delete user" });
     });
 }
 
+
+// function getJobsByFieldCity(req, res) {
+//   const { job_search_field, job_search_city } = req.body;
+//   const sql = `INSERT INTO jobsearch (job_search_field, job_search_city) VALUES ($1,$2) RETURNING *;`;
+// const VALUES =[ job_search_city, job_search_field];
+//   const values = [job_search_field, job_search_city];
+//   client
+//     .query(sql, values)
+//     .then((data) => {
+//       const newsql=`SELECT * FROM jobs INNER JOIN usersinfo ON jobs.user_id = usersinfo.id WHERE job_field LIKE ${job_search_field} AND job_city LIKE ${job_search_city} ORDER BY job_id DESC;`;;
+//       client.query(newsql).then((data) => {
+//         const jobs = data.rows;
+//         res.status(201).json(jobs);      })   }) 
+//     .catch((err) => {
+//       console.error("Error deleting user:", err);
+//       res.status(500).json({ error: "Failed to delete user" });
+//     });
+// }
+
+
 // function getJobsByField(req, res) {
 //   const { job_field } = req.body;
-//   const sql = "SELECT * FROM jobs WHERE job_field=$1 ORDER BY ID DESC";
+//   const sql = "SELECT * FROM jobs WHERE job_field=$1 ORDER BY job_id DESC";
 //   const values = [job_field ];
 //   client
 //     .query(sql, values)
