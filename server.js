@@ -13,12 +13,8 @@ server.use(express.json());
 // const movieKey = process.env.API_KEY; API KEY
 
 // resume code:
-
-
 const pdf = require("html-pdf");
 const pdfSample = require("./pdf-sample");
-
-
 server.use(express.urlencoded({ extended: true }));
 
 server.post("/create-pdf", (req, res) => {
@@ -30,9 +26,6 @@ server.post("/create-pdf", (req, res) => {
     res.send(Promise.resolve());
     console.log("Success");
   });
-});
-server.get("/welcome", (req, res) => {
-  res.send(`welcome to resume`);
 });
 
 server.get("/fetch-pdf", (req, res) => {
